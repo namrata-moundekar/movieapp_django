@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+  <title> Movie App </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"> </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"> </script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"> </script>
+   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" >
+
+
+    <script>
+        $(document).ready(function() {
+            console.log("gui ajax called")
+            $("#rating").click(function(e) {
+                e.preventDefault();
+                var rating = $("#rating").val();
+                $.ajax({
+                    type: "GET",
+                    url: "rating_search?rating=" + rating,
+                    dataType: "json",
+                    success: function(response) {
+                        var moviesByRating = response.moviesByRating;
+                        var trHTML = '';
+                        if (response.moviesByRating.length > 0) {
+                                    $.each(moviesByRating, function (i, item) {
+
+                                        $('#rates').prepend("<tr>\
+                                                    <td>"+ moviesByRating[i]['name']  +"</td>\
+                                                    <td>"+ moviesByRating[i]['rating']  +"</td>\
+                                                    <td>"+ moviesByRating[i]['release_date']  +"</td>\
+                                                    <td><img src="+ moviesByRating[i]['poster_image']  +"></td>\
+                                                    <td>"+ item.actors.map(s => s.name).join('<br/>') +"</td>\
+                                                    <td>"+ item.genres.map(s => s.type).join('<br/>') +"</td>\
+                                                    </tr>");
+                                    })
+                                    console.log(response);
+
+                        }
+                        else {
+                            trHTML = '<tr style="text-align: center"><td colspan="8">' + 'No Records' + '</td></td>';
+                            $('#rates').html(trHTML);
+
+                        }
+                                }
+                            });
+
+            });
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            console.log("gui ajax called")
+            $("#release_date").click(function(e) {
+                e.preventDefault();
+                var release_date = $("#release_date").val();
+                $.ajax({
+                    type: "GET",
+                    url: "date_search?release_date=" + release_date,
+                    dataType: "json",
+                    success: function(response) {
+                        var movies_by_date = response.movies_by_date;
+                        var trHTML = '';
+                        if (response.movies_by_date.length > 0) {
+                                $.each(movies_by_date, function (i, item) {
+
+                                    $('#rates').prepend("<tr>\
+                                                <td>"+ movies_by_date[i]['name']  +"</td>\
+                                                <td>"+ movies_by_date[i]['rating']  +"</td>\
+                                                <td>"+ movies_by_date[i]['release_date']  +"</td>\
+                                                <td><img src="+ movies_by_date[i]['poster_image']  +"></td>\
+                                                <td>"+ item.actors.map(s => s.name).join('<br/>') +"</td>\
+                                                <td>"+ item.genres.map(s => s.type).join('<br/>') +"</td>\
+                                                </tr>");
+                                })
+                                console.log(response);
+                               }
+                        else {
+                            trHTML = '<tr style="text-align: center"><td colspan="8">' + 'No Records' + '</td></td>';
+                            $('#rates').html(trHTML);
+
+                        }
+                    }
+                });
+            });
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            console.log("gui ajax called")
+            $("#actors").click(function(e) {
+                e.preventDefault();
+                var actors = $("#actors").val();
+                console.log(actors);
+                $.ajax({
+                    type: "GET",
+                    url: "actor_search?actors=" + actors,
+                    dataType: "json",
+                    success: function(response) {
+                        var movies_by_actors = response.movies_by_actors;
+                        var trHTML = '';
+                        if (response.movies_by_actors.length > 0) {
+                                $.each(movies_by_actors, function (i, item) {
+
+                                    $('#rates').prepend("<tr>\
+                                                <td>"+ movies_by_actors[i]['name']  +"</td>\
+                                                <td>"+ movies_by_actors[i]['rating']  +"</td>\
+                                                <td>"+ movies_by_actors[i]['release_date']  +"</td>\
+                                                <td><img src="+ movies_by_actors[i]['poster_image']  +"></td>\
+                                                <td>"+ item.actors.map(s => s.name).join('<br/>') +"</td>\
+                                                <td>"+ item.genres.map(s => s.type).join('<br/>') +"</td>\
+                                                </tr>");
+                                })
+                                console.log(response);
+                              }
+
+                        else {
+                            trHTML = '<tr style="text-align: center"><td colspan="8">' + 'No Records' + '</td></td>';
+                            $('#rates').html(trHTML);
+
+                        }
+                    }
+                });
+            });
+        })
+    </script>
+<script>
+        $(document).ready(function() {
+            console.log("gui ajax called")
+            $("#genres").click(function(e) {
+                e.preventDefault();
+                var genres = $("#genres").val();
+                console.log(genres);
+                $.ajax({
+                    type: "GET",
+                    url: "genres_search?genres=" + genres,
+                    dataType: "json",
+                    success: function(response) {
+                        var movies_by_genres = response.movies_by_genres;
+                        var trHTML = '';
+                        if (response.movies_by_genres.length > 0) {
+                                $.each(movies_by_genres, function (i, item) {
+
+                                    $('#rates').prepend("<tr>\
+                                                <td>"+ movies_by_genres[i]['name']  +"</td>\
+                                                <td>"+ movies_by_genres[i]['rating']  +"</td>\
+                                                <td>"+ movies_by_genres[i]['release_date']  +"</td>\
+                                                <td><img src="+ movies_by_genres[i]['poster_image']  +"></td>\
+                                                <td>"+ item.actors.map(s => s.name).join('<br/>') +"</td>\
+                                                <td>"+ item.genres.map(s => s.type).join('<br/>') +"</td>\
+                                                </tr>");
+                                })
+                                console.log(response);
+                             }
+
+                        else {
+                            trHTML = '<tr style="text-align: center"><td colspan="8">' + 'No Records' + '</td></td>';
+                            $('#rates').html(trHTML);
+
+                        }
+                    }
+                });
+            });
+        })
+    </script>
+</head>
+
+<style>
+
+*{
+font-family: 'Poppins' , sans-serif;
+}
+
+</style>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+
+    <div class="container" >
+
+    <a class="navbar-brand" href="{% url 'filter' %}">Movies ShowBox </a><a href="/filter/" class="btn btn-success btn-md">Back</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+
+    </div>
+    </div>
+  </nav>
+
+<div class="container" style="background-color:#e9e6dd;">
+    <form method="GET" action="/filter/">
+     {% csrf_token %}
+<div class="row" >
+    <div class="col-md-3">
+      <label for="inputState">Rating</label>
+      <select id="rating" class="form-control" class="form-select" name="r">
+          <option value=""  selected>Choose...</option>
+        <option value="1" name="r" >1</option>
+        <option value="2" name="r" >2</option>
+        <option value="3" name="r" >3</option>
+         <option value="4" name="r" >4</option>
+        <option value="5" name="r" >5</option>
+        <option value="6" name="r" >6</option>
+          <option value="7" name="r" >7</option>
+        <option value="8" name="r" >8</option>
+        <option value="9" name="r">9</option>
+          <option value="10" name="r" >10</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label for="inputState">Published On</label>
+      <select id="release_date" class="form-control" class="form-select" name="p">
+
+           <option value="" selected>Choose...</option>
+          <option value="2022" name="p" >2022</option>
+            <option value="2020" name="p" >2020</option>
+            <option value="2018" name="p" >2018</option>
+             <option value="2016" name="p" >2016</option>
+          <option value="2014" name="p" >2014</option>
+            <option value="2012" name="p" >2012</option>
+          <option value="2010" name="p" >2010</option>
+            <option value="2008" name="p" >2008</option>
+            <option value="2006" name="p" >2006</option>
+             <option value="2004" name="p" >2004</option>
+          <option value="2002" name="p" >2002</option>
+            <option value="2000" name="p" >2000</option>
+            <option value="1998" name="p" >1998</option>
+             <option value="1996" name="p" >1996</option>
+      </select>
+    </div>
+      <div class="col-md-3">
+      <label for="inputState">Actors</label>
+      <select id="actors" class="form-control" class="form-select" name="a">
+           <option value=""  selected>Choose...</option>
+          {% for act in actor_nm %}
+          <option>{{ act.name }}</option>
+          {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-3">
+         <label for="inputState">Genres</label>
+      <select id="genres" class="form-control" class="form-select" name="g">
+          <option value=""  selected>Choose...</option>
+       <option value="Horror" name="g" >Horror</option>
+            <option value="Thriller" name="g" >Thriller</option>
+            <option value="Action" name="g" >Action</option>
+             <option value="Comedy" name="g" >Comedy</option>
+          <option value="Crime" name="g" >Crime</option>
+            <option value="Drama" name="g" >Drama</option>
+
+      </select>
+
+    </div>
+  </div>    `
+</div>
+
+
+
+</div>
+
+
+<h4 style="color:" class="text-center alert bg-secondary my-5">Show Movie Details</h4>
+<div class="row">
+ <div class="col-md-12">
+					  <table class="table table-bordered table-striped">
+		                <thead>
+		                <tr>
+		                    <th scope="col">Movie name</th>
+                            <th scope="col">Movie Rating</th>
+                            <th scope="col">Movie Published On</th>
+                            <th scope="col">Movie Poster</th>
+                            <th scope="col">Actors</th>
+                            <th scope="col">Movie Genres</th>
+
+		                </tr>
+		                </thead>
+						<tbody id="rates">
+                        </tbody>
+
+		            </table>
+		</div>
+</div>
+
+<script>
+$(document).ready(function() {
+      $('#example1').DataTable();
+  } );
+
+</script>
+
+</body>
+</html>
