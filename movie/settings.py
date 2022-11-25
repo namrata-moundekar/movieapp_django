@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
@@ -23,15 +24,13 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 SECRET_KEY = "django-insecure-c+ub%wf^*92w2$75fqibump*3!4c0fshz_&r09#00=q$f)+4!="
 
 import pymysql
-pymysql.install_as_MySQLdb()
 
+pymysql.install_as_MySQLdb()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -77,12 +76,14 @@ TEMPLATES = [
     },
 ]
 
-REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
-                    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-                    # 'PAGE_SIZE': 10
+REST_FRAMEWORK = {'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+                  'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+                  'PAGE_SIZE': 5,
+                 'DEFAULT_PERMISSION_CLASSES': [
+                       'rest_framework.permissions.AllowAny',
+                    ]
 
-                   }
-
+                  }
 
 WSGI_APPLICATION = "movie.wsgi.application"
 
@@ -96,17 +97,16 @@ DATABASES = {
     #     "ENGINE": "django.db.backends.sqlite3",
     #     "NAME": BASE_DIR / "db.sqlite3",
     # }
-    
-    'default': {                                        #primary database
-        'ENGINE' : 'django.db.backends.mysql',
+
+    'default': {  # primary database
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'movieinfodb',
-        'PORT' : 3306,
-        'USER' : 'root',
-        'PASSWORD':'Namrata.31',
-        'HOST' : 'localhost'
+        'PORT': 3306,
+        'USER': 'root',
+        'PASSWORD': 'Namrata.31',
+        'HOST': 'localhost'
     },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -115,11 +115,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", },
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -132,7 +131,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -141,12 +139,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (STATIC_DIR,)
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
-
 
 # STATIC_URL = '/static/'
 

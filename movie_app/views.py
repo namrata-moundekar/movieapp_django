@@ -11,6 +11,7 @@ from movie_app import serializers as serial
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from django.http import JsonResponse
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import AllowAny
 from django.shortcuts import HttpResponse
 
 from movie_app.filters import MovieFilter
@@ -23,10 +24,10 @@ from movie_app.filters import MovieFilter
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 4
-    page_size_query_param = 'page_size'
-    max_page_size = 5
+# class StandardResultsSetPagination(PageNumberPagination):
+#     page_size = 4
+#     page_size_query_param = 'page_size'
+#     max_page_size = 5
 
 
 def search(request):
@@ -149,84 +150,101 @@ class MovieCrud(ModelViewSet):
     """ Crud for Movie model  """
     queryset = Movie.objects.all()
     serializer_class = MovieApiSerializer
-    pagination_class = StandardResultsSetPagination
+    # pagination_class = StandardResultsSetPagination
 
 
 class ActorCrud(ModelViewSet):
     """ Crud for Actor model  """
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
-    pagination_class = StandardResultsSetPagination
+    # pagination_class = StandardResultsSetPagination
 
 
 class GenresCrud(ModelViewSet):
     """ Crud for Genre model  """
     queryset = Genres.objects.all()
     serializer_class = GenresSerializer
-    pagination_class = StandardResultsSetPagination
+    # pagination_class = StandardResultsSetPagination
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([AllowAny,])
 def view_by_rating_api(request):
     """ Api endpoint for movie rating  """
     print("ajax called")
     jsondata = request.data
     if jsondata:
         rates = jsondata.get('rating')
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
         movies_by_rating = Movie.objects.filter(rating__startswith=rates)
+        movies_by_rating = paginator.paginate_queryset(movies_by_rating, request)
         print("movie_rates", movies_by_rating)
         serializer = serial.MovieApiSerializer(movies_by_rating, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return paginator.get_paginated_response(serializer.data)
     else:
         return JsonResponse({"Failure": "Empty Body"})
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([AllowAny,])
 def view_by_release_date_api(request):
     """ Api endpoint for release_date of movies  """
     print("ajax called")
     jsondata = request.data
     if jsondata:
         release_date = jsondata.get('release_date')
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
         movies_by_date = Movie.objects.filter(release_date__icontains=release_date)
+        movies_by_date = paginator.paginate_queryset(movies_by_date, request)
         print("movie_rates", movies_by_date)
         serializer = serial.MovieApiSerializer(movies_by_date, many=True)
-        return JsonResponse({"movies_by_date": serializer.data}, status=200)
+        return paginator.get_paginated_response(serializer.data)
     else:
         return JsonResponse({"Failure": "Empty Body"})
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([AllowAny,])
 def view_by_actors_api(request):
     """ Api endpoint for actors of movies  """
     print("ajax called")
     jsondata = request.data
     if jsondata:
         actors = jsondata.get('actors')
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
         movies_by_actors = Movie.objects.filter(actors__name__icontains=actors)
+        movies_by_actors = paginator.paginate_queryset(movies_by_actors, request)
         print("movie_rates", movies_by_actors)
         serializer = serial.MovieApiSerializer(movies_by_actors, many=True)
-        return JsonResponse({"movies_by_actors": serializer.data}, status=200)
+        return paginator.get_paginated_response(serializer.data)
     else:
         return JsonResponse({"Failure": "Empty Body"})
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([AllowAny,])
 def view_by_genres_api(request):
     """ Api endpoint for genre of movies  """
     print("ajax called")
     jsondata = request.data
     if jsondata:
         genres = jsondata.get('genres')
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
         movies_by_genres = Movie.objects.filter(genres__type__icontains=genres)
+        movies_by_genres = paginator.paginate_queryset(movies_by_genres, request)
         print("movie_rates", movies_by_genres)
         serializer = serial.MovieApiSerializer(movies_by_genres, many=True)
-        return JsonResponse({"movies_by_genres": serializer.data}, status=200)
+        return paginator.get_paginated_response(serializer.data)
     else:
         return JsonResponse({"Failure": "Empty Body"})
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([AllowAny,])
 def search_by_all_api(request):
     """ Api endpoint for searching of all fields of models  """
     print("ajax called")
@@ -234,26 +252,41 @@ def search_by_all_api(request):
     if jsondata:
         if jsondata.get('name'):
             search = jsondata.get('name')
+            paginator = PageNumberPagination()
+            paginator.page_size = 5
             print("search", search)
             query = Movie.objects.filter(name__icontains=search)
+            query = paginator.paginate_queryset(query, request)
         if jsondata.get('rating'):
             search = jsondata.get('rating')
+            paginator = PageNumberPagination()
+            paginator.page_size = 5
             print("search", search)
             query = Movie.objects.filter(rating__icontains=search)
+            query = paginator.paginate_queryset(query, request)
         if jsondata.get('actors'):
             search = jsondata.get('actors')
+            paginator = PageNumberPagination()
+            paginator.page_size = 5
             print("search", search)
             query = Movie.objects.filter(actors__name__icontains=search)
+            query = paginator.paginate_queryset(query, request)
         if jsondata.get('release_date'):
             search = jsondata.get('release_date')
+            paginator = PageNumberPagination()
+            paginator.page_size = 5
             print("search", search)
             query = Movie.objects.filter(release_date__icontains=search)
+            query = paginator.paginate_queryset(query, request)
         if jsondata.get('genres'):
             search = jsondata.get('genres')
+            paginator = PageNumberPagination()
+            paginator.page_size = 5
             print("search", search)
             query = Movie.objects.filter(genres__type__icontains=search)
+            query = paginator.paginate_queryset(query, request)
         serializer = serial.MovieApiSerializer(query, many=True)
-        return JsonResponse({"query": serializer.data}, status=200)
+        return paginator.get_paginated_response(serializer.data)
     else:
         return JsonResponse({"Failure": "Empty Body"})
 
