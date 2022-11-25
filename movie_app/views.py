@@ -170,80 +170,68 @@ class GenresCrud(ModelViewSet):
 def view_by_rating_api(request):
     """ Api endpoint for movie rating  """
     print("ajax called")
-    if is_ajax(request=request) or request.method == 'GET':
-        jsondata = request.data
+    jsondata = request.data
+    if jsondata:
         rates = jsondata.get('rating')
-        movies_by_rating = Movie.objects.filter(rating__icontains=rates)
+        movies_by_rating = Movie.objects.filter(rating__startswith=rates)
         print("movie_rates", movies_by_rating)
         serializer = serial.MovieApiSerializer(movies_by_rating, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        movies_by_rating = Movie.objects.all()
-        serializer = serial.MovieSerializer(movies_by_rating, many=True)
-        return JsonResponse({"movies_by_rating": serializer.data}, status=200)
+        return JsonResponse({"Failure": "Empty Body"})
 
 
 @api_view(['GET', 'POST'])
-@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def view_by_release_date_api(request):
     """ Api endpoint for release_date of movies  """
     print("ajax called")
-    if is_ajax(request=request) or request.method == 'GET':
-        jsondata = request.data
+    jsondata = request.data
+    if jsondata:
         release_date = jsondata.get('release_date')
         movies_by_date = Movie.objects.filter(release_date__icontains=release_date)
         print("movie_rates", movies_by_date)
         serializer = serial.MovieApiSerializer(movies_by_date, many=True)
         return JsonResponse({"movies_by_date": serializer.data}, status=200)
     else:
-        movies_by_date = Movie.objects.all()
-        serializer = serial.MovieSerializer(movies_by_date, many=True)
-        return JsonResponse({"movies_by_date": serializer.data}, status=200)
+        return JsonResponse({"Failure": "Empty Body"})
 
 
 @api_view(['GET', 'POST'])
-@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def view_by_actors_api(request):
     """ Api endpoint for actors of movies  """
     print("ajax called")
-    if is_ajax(request=request) or request.method == 'GET':
-        jsondata = request.data
+    jsondata = request.data
+    if jsondata:
         actors = jsondata.get('actors')
         movies_by_actors = Movie.objects.filter(actors__name__icontains=actors)
         print("movie_rates", movies_by_actors)
         serializer = serial.MovieApiSerializer(movies_by_actors, many=True)
         return JsonResponse({"movies_by_actors": serializer.data}, status=200)
     else:
-        movies_by_actors = Movie.objects.all()
-        serializer = serial.MovieSerializer(movies_by_actors, many=True)
-        return JsonResponse({"movies_by_actors": serializer.data}, status=200)
+        return JsonResponse({"Failure": "Empty Body"})
 
 
 @api_view(['GET', 'POST'])
-@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def view_by_genres_api(request):
     """ Api endpoint for genre of movies  """
     print("ajax called")
-    if is_ajax(request=request) or request.method == 'GET':
-        jsondata = request.data
+    jsondata = request.data
+    if jsondata:
         genres = jsondata.get('genres')
         movies_by_genres = Movie.objects.filter(genres__type__icontains=genres)
         print("movie_rates", movies_by_genres)
         serializer = serial.MovieApiSerializer(movies_by_genres, many=True)
         return JsonResponse({"movies_by_genres": serializer.data}, status=200)
     else:
-        movies_by_genres = Movie.objects.all()
-        serializer = serial.MovieSerializer(movies_by_genres, many=True)
-        return JsonResponse({"movies_by_genres": serializer.data}, status=200)
+        return JsonResponse({"Failure": "Empty Body"})
 
 
 @api_view(['GET', 'POST'])
-@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def search_by_all_api(request):
     """ Api endpoint for searching of all fields of models  """
     print("ajax called")
-    if request.method == 'GET':
-        jsondata = request.data
+    jsondata = request.data
+    if jsondata:
         if jsondata.get('name'):
             search = jsondata.get('name')
             print("search", search)
@@ -267,8 +255,6 @@ def search_by_all_api(request):
         serializer = serial.MovieApiSerializer(query, many=True)
         return JsonResponse({"query": serializer.data}, status=200)
     else:
-        query = Movie.objects.all()
-        serializer = serial.MovieApiSerializer(query, many=True)
-        return JsonResponse({"query": serializer.data}, status=200)
+        return JsonResponse({"Failure": "Empty Body"})
 
 
