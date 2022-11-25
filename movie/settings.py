@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "movie_app",
     "rest_framework",
+    'django_filters',
+    'widget_tweaks',
     "rest_framework_swagger",
 ]
 
@@ -76,8 +78,8 @@ TEMPLATES = [
 ]
 
 REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
-                    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-                    'PAGE_SIZE': 10
+                    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+                    # 'PAGE_SIZE': 10
 
                    }
 

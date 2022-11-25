@@ -1,3 +1,5 @@
+from itertools import count
+
 from django.shortcuts import render, redirect, HttpResponse
 from movie_app.models import Movie, Actor, Genres
 from movie_app.serializers import GenresSerializer, ActorSerializer, MovieSerializer, MovieApiSerializer
@@ -8,7 +10,11 @@ from rest_framework import status
 from movie_app import serializers as serial
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from django.http import JsonResponse
+from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import HttpResponse
+
+from movie_app.filters import MovieFilter
+
 
 # print(connection.queries)
 
@@ -17,6 +23,16 @@ from django.shortcuts import HttpResponse
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 4
+    page_size_query_param = 'page_size'
+    max_page_size = 5
+
+
+def search(request):
+    user_list = Movie.objects.all()
+    user_filter = MovieFilter(request.GET, queryset=user_list)
+    return render(request, 'Dashboard/search.html', {'filter': user_filter})
 
 def add_show_movie(request):
     queries = Movie.objects.all()
@@ -84,11 +100,14 @@ def view_by_genres(request):
     print("ajax called")
     if is_ajax(request=request) or request.method == 'GET':
         genres = request.GET.get('genres')
+        print("genre",genres)
 
         movies_by_genres = Movie.objects.filter(genres__type__icontains=genres)
         print("movie_rates", movies_by_genres)
+
         serializer = serial.MovieSerializer(movies_by_genres, many=True)
         return JsonResponse({"movies_by_genres": serializer.data}, status=200)
+
     else:
         movies_by_genres = Movie.objects.all()
         serializer = serial.MovieSerializer(movies_by_genres, many=True)
@@ -119,7 +138,8 @@ def index(request):
 def filter_movie(request):
     """ showing filter of rating,movie name,movie dates,genre and actors  """
     queries = Actor.objects.all()
-    return render(request, 'Dashboard/addshow_movie.html', {'actor_nm':queries})
+    genre = Genres.objects.all()
+    return render(request, 'Dashboard/addshow_movie.html', {'actor_nm':queries,'genres':genre})
 
 
 ###################### Rest Framework Start Here   ###############################
@@ -129,18 +149,21 @@ class MovieCrud(ModelViewSet):
     """ Crud for Movie model  """
     queryset = Movie.objects.all()
     serializer_class = MovieApiSerializer
+    pagination_class = StandardResultsSetPagination
 
 
 class ActorCrud(ModelViewSet):
     """ Crud for Actor model  """
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
+    pagination_class = StandardResultsSetPagination
 
 
 class GenresCrud(ModelViewSet):
     """ Crud for Genre model  """
     queryset = Genres.objects.all()
     serializer_class = GenresSerializer
+    pagination_class = StandardResultsSetPagination
 
 
 @api_view(['GET', 'POST'])

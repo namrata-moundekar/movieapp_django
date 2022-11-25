@@ -19,12 +19,14 @@ from movie_app import views
 from django.conf.urls.static import static
 from django.conf import settings
 from rest_framework_swagger.views import get_swagger_view
+# from django.conf.urls import url
 
 schema_view = get_swagger_view(title='Movie Showbox')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('filter/', views.index, name='filter'),
+    path('search/', views.search, name='search'),
     path('filter_movie/', views.filter_movie, name='filter_movie'),
     path('filter_movie/rating_search', views.view_by_rating, name='filter/rating_search'),
     path('filter_movie/date_search', views.view_by_release_date, name='filter/date_search'),
@@ -37,6 +39,7 @@ urlpatterns = [
     path('filter_movie/search_api', views.search_by_all_api, name='api_search'),
     path('swagger/', schema_view),
     path('movie_showbox/',include('movie_app.urls')),
+
 
 ]
 if settings.DEBUG:

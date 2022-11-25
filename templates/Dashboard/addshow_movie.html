@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load widget_tweaks %}
 <html>
 <head>
   <title> Movie App </title>
@@ -247,18 +248,17 @@ font-family: 'Poppins' , sans-serif;
 
     <div class="col-md-3">
          <label for="inputState">Genres</label>
-      <select id="genres" class="form-control" class="form-select" name="g">
+      <select  id="genres" class="form-control" class="form-select" name="g">
           <option value=""  selected>Choose...</option>
-       <option value="Horror" name="g" >Horror</option>
-            <option value="Thriller" name="g" >Thriller</option>
-            <option value="Action" name="g" >Action</option>
-             <option value="Comedy" name="g" >Comedy</option>
-          <option value="Crime" name="g" >Crime</option>
-            <option value="Drama" name="g" >Drama</option>
+          {% for gen in genres %}
+          <option>{{ gen.type }}</option>
+          {% endfor %}
+
 
       </select>
 
     </div>
+    </form>
   </div>    `
 </div>
 
